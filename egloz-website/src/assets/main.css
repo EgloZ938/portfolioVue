@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent-color: #ff6b6b;
+  --text-color: #ffffff;
+  --bg-color: #1a1a1a;
+}
+
+body {
+  font-family: "Raleway", sans-serif;
+  @apply m-0 font-['Raleway'] text-white bg-[#1a1a1a];
+}
+
+html {
+  scroll-behavior: smooth;
+  @apply h-full scroll-smooth;
+}
+
+body.no-scroll {
+  @apply overflow-hidden fixed w-full h-full;
+}
