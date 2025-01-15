@@ -4,6 +4,9 @@
     id="skills"
     class="relative min-h-screen bg-[#1a1a1a] py-20 overflow-hidden"
   >
+    <!-- Conteneur particles.js -->
+    <div id="particles-js" class="absolute inset-0 z-0"></div>
+
     <!-- Formes géométriques en background -->
     <div class="absolute inset-0 overflow-hidden">
       <div
@@ -351,6 +354,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import particlesConfig from "@/config/particles-config";
 
 const activeCard = ref(null);
 const isMobile = ref(false);
@@ -362,6 +366,11 @@ const checkIfMobile = () => {
 
 // Setup des event listeners
 onMounted(() => {
+  // Initialisation de particles.js
+  if (window.particlesJS) {
+    window.particlesJS("particles-js", particlesConfig);
+  }
+
   // Check initial
   checkIfMobile();
 
@@ -468,5 +477,16 @@ const tools = ref([
 
 .animate-float-reverse {
   animation: float 18s infinite ease-in-out reverse;
+}
+
+/* Styles pour particles.js */
+#particles-js {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#particles-js canvas {
+  pointer-events: auto;
 }
 </style>

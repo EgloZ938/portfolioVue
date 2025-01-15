@@ -87,14 +87,6 @@
                 faisant de moi un développeur polyvalent capable de gérer
                 l'intégralité d'un projet web.
               </p>
-              <p
-                class="text-[#a0a0a0] text-sm sm:text-base leading-relaxed bg-[#1a1a1a]/70 p-4 md:p-3 rounded relative z-[3]"
-              >
-                Mon objectif est de continuer à développer mes compétences et à
-                rester à jour avec les dernières technologies du secteur. Je
-                m'efforce de combiner rigueur technique et solutions pratiques
-                pour relever les défis complexes du développement web moderne.
-              </p>
             </div>
 
             <!-- Separator -->
