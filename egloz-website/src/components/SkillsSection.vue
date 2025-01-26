@@ -423,6 +423,7 @@ const frontendSkills = ref([
   { name: "Tailwind", icon: "devicon-tailwindcss-plain colored" },
   { name: "jQuery", icon: "devicon-jquery-plain colored" },
   { name: "Bootstrap", icon: "devicon-bootstrap-plain colored" },
+  { name: "Markdown", icon: "devicon-markdown-original colored" },
 ]);
 
 const backendSkills = ref([
@@ -450,7 +451,6 @@ const tools = ref([
   { name: "VS Code", icon: "devicon-vscode-plain colored" },
   { name: "Postman", icon: "devicon-postman-plain colored" },
   { name: "Unity", icon: "devicon-unity-plain colored" },
-  { name: "Markdown", icon: "devicon-markdown-original colored" },
 ]);
 </script>
 
