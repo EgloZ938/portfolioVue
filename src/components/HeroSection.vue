@@ -72,31 +72,47 @@ const socials = [
 ];
 
 const smoothScrollTo = (target) => {
-  const element = document.querySelector(target);
-  if (!element) return;
+  const targetElement = document.querySelector(target);
+  if (!targetElement) return;
 
-  const elementPosition = element.offsetTop;
-  const startPosition = window.pageYOffset;
-  const distance = elementPosition - startPosition;
-  const duration = 1500; // Durée en millisecondes (1.5 secondes)
-  let start = null;
+  // Détection de Firefox
+  const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
 
-  const animation = (currentTime) => {
-    if (start === null) start = currentTime;
-    const timeElapsed = currentTime - start;
-    const progress = Math.min(timeElapsed / duration, 1);
+  if (isFirefox) {
+    // Animation personnalisée pour Firefox
+    const elementPosition =
+      targetElement.getBoundingClientRect().top + window.pageYOffset;
+    const startPosition = window.pageYOffset;
+    const distance = elementPosition - startPosition;
+    const duration = 1500;
+    let start = null;
 
-    // Fonction d'easing pour une animation plus douce
-    const easeInOutCubic = (t) =>
-      t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    const easeInOutQuart = (t) => {
+      return t < 0.5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t;
+    };
 
-    window.scrollTo(0, startPosition + distance * easeInOutCubic(progress));
+    const animation = (currentTime) => {
+      if (start === null) start = currentTime;
+      const timeElapsed = currentTime - start;
+      const progress = Math.min(timeElapsed / duration, 1);
 
-    if (timeElapsed < duration) {
-      requestAnimationFrame(animation);
-    }
-  };
+      window.scrollTo({
+        top: startPosition + distance * easeInOutQuart(progress),
+        behavior: "auto",
+      });
 
-  requestAnimationFrame(animation);
+      if (timeElapsed < duration) {
+        requestAnimationFrame(animation);
+      }
+    };
+
+    requestAnimationFrame(animation);
+  } else {
+    // Scroll natif pour les autres navigateurs
+    targetElement.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
 };
 </script>
