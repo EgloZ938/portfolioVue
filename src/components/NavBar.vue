@@ -84,6 +84,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import VueScrollTo from "vue-scrollto";
 
 const isMenuOpen = ref(false);
 const currentSection = ref("");
@@ -107,32 +108,10 @@ const closeMenu = () => {
 };
 
 const smoothScrollTo = (target) => {
-  const targetElement = document.querySelector(target);
-  if (!targetElement) return;
-
-  const elementPosition = targetElement.offsetTop;
-  const startPosition = window.pageYOffset;
-  const distance = elementPosition - startPosition;
-  const duration = 1500; // 1.5 secondes
-  let start = null;
-
-  const animation = (currentTime) => {
-    if (start === null) start = currentTime;
-    const timeElapsed = currentTime - start;
-    const progress = Math.min(timeElapsed / duration, 1);
-
-    // Fonction d'easing pour une animation plus douce
-    const easeInOutCubic = (t) =>
-      t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-
-    window.scrollTo(0, startPosition + distance * easeInOutCubic(progress));
-
-    if (timeElapsed < duration) {
-      requestAnimationFrame(animation);
-    }
-  };
-
-  requestAnimationFrame(animation);
+  VueScrollTo.scrollTo(target, 1500, {
+    easing: [0.25, 0.1, 0.25, 1.0],
+    offset: 0,
+  });
 };
 
 const observeSection = () => {
