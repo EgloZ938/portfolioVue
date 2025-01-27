@@ -84,7 +84,6 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import VueScrollTo from "vue-scrollto";
 
 const isMenuOpen = ref(false);
 const currentSection = ref("");
@@ -108,10 +107,48 @@ const closeMenu = () => {
 };
 
 const smoothScrollTo = (target) => {
-  VueScrollTo.scrollTo(target, 1500, {
-    easing: [0.25, 0.1, 0.25, 1.0],
-    offset: 0,
-  });
+  const targetElement = document.querySelector(target);
+  if (!targetElement) return;
+
+  // Détection de Firefox
+  const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
+
+  if (isFirefox) {
+    // Votre code actuel pour Firefox qui fonctionne bien
+    const elementPosition =
+      targetElement.getBoundingClientRect().top + window.pageYOffset;
+    const startPosition = window.pageYOffset;
+    const distance = elementPosition - startPosition;
+    const duration = 1500;
+    let start = null;
+
+    const easeInOutQuart = (t) => {
+      return t < 0.5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t;
+    };
+
+    const animation = (currentTime) => {
+      if (start === null) start = currentTime;
+      const timeElapsed = currentTime - start;
+      const progress = Math.min(timeElapsed / duration, 1);
+
+      window.scrollTo({
+        top: startPosition + distance * easeInOutQuart(progress),
+        behavior: "auto",
+      });
+
+      if (timeElapsed < duration) {
+        requestAnimationFrame(animation);
+      }
+    };
+
+    requestAnimationFrame(animation);
+  } else {
+    // Pour les autres navigateurs, utiliser le scroll natif
+    targetElement.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
 };
 
 const observeSection = () => {
