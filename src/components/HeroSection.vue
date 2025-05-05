@@ -13,8 +13,19 @@
       </p>
       <h1
         class="text-[2.4em] sm:text-[2.8em] md:text-[3.2em] lg:text-[3.5em] xl:text-[4em] text-white font-bold mb-[0.2em]">
-        Je suis Théo EVON.
+        Je suis
+        <div class="relative inline-block transform hover:scale-105 transition-all duration-300 cursor-pointer"
+          @mouseover="startGlitchEffect" @mouseout="stopGlitchEffect">
+          <span class="pseudo-glitch pointer-events-none">
+            <span :class="{ 'glitch-before': isGlitching }" data-text="Théo EVON" class="relative text-[#ff6b6b]">Théo
+              EVON</span>
+          </span>
+          <div
+            class="absolute -bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#ff6b6b] to-transparent pointer-events-none"
+            :class="{ 'glow-line': isGlitching }"></div>
+        </div>
       </h1>
+
       <div class="flex items-center justify-center mb-[1.5em]">
         <span class="w-[2px] h-[30px] bg-[#ff6b6b] mx-[15px]"></span>
         <div class="relative">
@@ -76,6 +87,31 @@ const buttonHovered = ref(false);
 const typewriterElement = ref(null);
 const textToType = "DÉVELOPPEUR FULLSTACK";
 let typewriterTimeout = null;
+const isGlitching = ref(false);
+let glitchInterval = null;
+
+// Effet de glitch pour le pseudo EgloZ
+const startGlitchEffect = () => {
+  if (glitchInterval) clearInterval(glitchInterval);
+
+  // Lance l'effet glitch à intervalles irréguliers
+  glitchInterval = setInterval(() => {
+    isGlitching.value = true;
+
+    // Arrête l'effet après un court délai
+    setTimeout(() => {
+      isGlitching.value = false;
+    }, 150);
+  }, 300);
+};
+
+const stopGlitchEffect = () => {
+  if (glitchInterval) {
+    clearInterval(glitchInterval);
+    glitchInterval = null;
+  }
+  isGlitching.value = false;
+};
 
 const setupTypewriter = () => {
   if (!typewriterElement.value) return;
@@ -178,6 +214,9 @@ onUnmounted(() => {
   if (typewriterTimeout) {
     clearTimeout(typewriterTimeout);
   }
+  if (glitchInterval) {
+    clearInterval(glitchInterval);
+  }
 });
 </script>
 
@@ -197,6 +236,117 @@ onUnmounted(() => {
 
   50% {
     opacity: 0;
+  }
+}
+
+/* Effet de glitch pour le nom */
+.pseudo-glitch {
+  position: relative;
+  text-shadow: 0 0 8px rgba(255, 107, 107, 0.7);
+  transition: all 0.3s ease;
+}
+
+.pseudo-glitch:hover {
+  text-shadow: 0 0 15px rgba(255, 107, 107, 1);
+}
+
+.glitch-before {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-before::before,
+.glitch-before::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-before::before {
+  left: -2px;
+  text-shadow: 2px 0 #ff6b6b;
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim-1 0.3s infinite linear alternate-reverse;
+  pointer-events: none;
+}
+
+.glitch-before::after {
+  left: 2px;
+  text-shadow: -2px 0 rgba(0, 255, 255, 0.8);
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim-2 0.2s infinite linear alternate-reverse;
+  pointer-events: none;
+}
+
+@keyframes glitch-anim-1 {
+  0% {
+    clip: rect(32px, 550px, 54px, 0);
+  }
+
+  20% {
+    clip: rect(12px, 550px, 84px, 0);
+  }
+
+  40% {
+    clip: rect(62px, 550px, 114px, 0);
+  }
+
+  60% {
+    clip: rect(42px, 550px, 94px, 0);
+  }
+
+  80% {
+    clip: rect(22px, 550px, 74px, 0);
+  }
+
+  100% {
+    clip: rect(52px, 550px, 104px, 0);
+  }
+}
+
+@keyframes glitch-anim-2 {
+  0% {
+    clip: rect(12px, 550px, 34px, 0);
+  }
+
+  20% {
+    clip: rect(52px, 550px, 74px, 0);
+  }
+
+  40% {
+    clip: rect(32px, 550px, 54px, 0);
+  }
+
+  60% {
+    clip: rect(92px, 550px, 114px, 0);
+  }
+
+  80% {
+    clip: rect(72px, 550px, 94px, 0);
+  }
+
+  100% {
+    clip: rect(12px, 550px, 34px, 0);
+  }
+}
+
+.glow-line {
+  animation: glow 1s ease-in-out infinite alternate;
+  height: 2px;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px rgba(255, 107, 107, 0.6);
+    opacity: 0.6;
+  }
+
+  to {
+    box-shadow: 0 0 20px rgba(255, 107, 107, 1);
+    opacity: 1;
   }
 }
 </style>
