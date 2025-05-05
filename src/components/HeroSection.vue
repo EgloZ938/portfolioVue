@@ -17,9 +17,13 @@
       </h1>
       <div class="flex items-center justify-center mb-[1.5em]">
         <span class="w-[2px] h-[30px] bg-[#ff6b6b] mx-[15px]"></span>
-        <p class="text-white text-[0.9em] sm:text-[1em] md:text-[1.1em] lg:text-[1.2em] xl:text-[1.4em] font-light">
-          DÉVELOPPEUR FULLSTACK
-        </p>
+        <div class="relative">
+          <p
+            class="text-white text-[0.9em] sm:text-[1em] md:text-[1.1em] lg:text-[1.2em] xl:text-[1.4em] font-light min-h-[1.6em] flex items-center justify-center">
+            <span ref="typewriterElement" class="whitespace-nowrap"></span>
+            <span class="typing-cursor">|</span>
+          </p>
+        </div>
         <span class="w-[2px] h-[30px] bg-[#ff6b6b] mx-[15px]"></span>
       </div>
       <button @click="smoothScrollTo('#about')" @mouseenter="buttonHovered = true" @mouseleave="buttonHovered = false"
@@ -58,7 +62,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 const socials = [
   { icon: "fab fa-github", url: "https://github.com/EgloZ938" },
@@ -69,6 +73,54 @@ const socials = [
 ];
 
 const buttonHovered = ref(false);
+const typewriterElement = ref(null);
+const textToType = "DÉVELOPPEUR FULLSTACK";
+let typewriterTimeout = null;
+
+const setupTypewriter = () => {
+  if (!typewriterElement.value) return;
+
+  const element = typewriterElement.value;
+  let text = '';
+  let charIndex = 0;
+  let isDeleting = false;
+  let typingDelay = 120; // Délai entre chaque caractère
+
+  const type = () => {
+    // Définir le délai pour la prochaine frappe
+    const currentChar = textToType.charAt(charIndex);
+
+    if (!isDeleting) {
+      // Ajout de caractères
+      text += currentChar;
+      element.textContent = text;
+      charIndex++;
+
+      if (charIndex === textToType.length) {
+        // Pause avant de commencer à effacer
+        typingDelay = 2000;
+        isDeleting = true;
+      }
+    } else {
+      // Suppression de caractères
+      text = text.substring(0, text.length - 1);
+      element.textContent = text;
+
+      if (text.length === 0) {
+        isDeleting = false;
+        charIndex = 0;
+        typingDelay = 500; // Pause avant de recommencer
+      } else {
+        typingDelay = 60; // Supprimer plus rapidement
+      }
+    }
+
+    typewriterTimeout = setTimeout(type, typingDelay);
+  };
+
+  // Démarrer l'effet
+  type();
+};
 
 const smoothScrollTo = (target) => {
   const targetElement = document.querySelector(target);
@@ -114,4 +166,37 @@ const smoothScrollTo = (target) => {
     });
   }
 };
+
+onMounted(() => {
+  // Lancer l'effet de machine à écrire après un délai
+  setTimeout(() => {
+    setupTypewriter();
+  }, 500);
+});
+
+onUnmounted(() => {
+  if (typewriterTimeout) {
+    clearTimeout(typewriterTimeout);
+  }
+});
 </script>
+
+<style scoped>
+/* Animation du curseur de machine à écrire */
+.typing-cursor {
+  color: #ff6b6b;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+
+  from,
+  to {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+</style>
