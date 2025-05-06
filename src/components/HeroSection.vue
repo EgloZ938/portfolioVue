@@ -85,7 +85,18 @@ const socials = [
 
 const buttonHovered = ref(false);
 const typewriterElement = ref(null);
-const textToType = "DÉVELOPPEUR FULLSTACK";
+
+
+const developperTexts = [
+  "FULLSTACK",
+  "PASSIONNÉ",
+  "JAVASCRIPT",
+  "REACT",
+  "VUE",
+  "NODEJS",
+  "BEAU GOSSE 😎"
+];
+
 let typewriterTimeout = null;
 const isGlitching = ref(false);
 let glitchInterval = null;
@@ -117,37 +128,57 @@ const setupTypewriter = () => {
   if (!typewriterElement.value) return;
 
   const element = typewriterElement.value;
+  let baseText = "DÉVELOPPEUR ";  // Texte fixe qui reste toujours
+  let currentTextIndex = 0;
   let text = '';
+  let isWritingBase = true;  // Si on écrit la partie "DÉVELOPPEUR" ou la spécialité
   let charIndex = 0;
   let isDeleting = false;
-  let typingDelay = 120; // Délai entre chaque caractère
+  let typingDelay = 120;
 
   const type = () => {
-    // Définir le délai pour la prochaine frappe
-    const currentChar = textToType.charAt(charIndex);
+    // Première partie - écrire "DÉVELOPPEUR "
+    if (isWritingBase) {
+      if (charIndex < baseText.length) {
+        text += baseText.charAt(charIndex);
+        element.textContent = text;
+        charIndex++;
+        typewriterTimeout = setTimeout(type, typingDelay);
+        return;
+      } else {
+        isWritingBase = false;
+        charIndex = 0;
+      }
+    }
+
+    // Deuxième partie - écrire/effacer les spécialités
+    const currentText = developperTexts[currentTextIndex];
 
     if (!isDeleting) {
-      // Ajout de caractères
-      text += currentChar;
-      element.textContent = text;
-      charIndex++;
+      // Ajout de caractères pour la spécialité
+      if (charIndex < currentText.length) {
+        text = baseText + currentText.substring(0, charIndex + 1);
+        element.textContent = text;
+        charIndex++;
 
-      if (charIndex === textToType.length) {
+        typingDelay = 120;
+      } else {
         // Pause avant de commencer à effacer
         typingDelay = 2000;
         isDeleting = true;
       }
     } else {
-      // Suppression de caractères
-      text = text.substring(0, text.length - 1);
-      element.textContent = text;
-
-      if (text.length === 0) {
-        isDeleting = false;
-        charIndex = 0;
-        typingDelay = 500; // Pause avant de recommencer
+      // Supprimer uniquement la spécialité, pas "DÉVELOPPEUR "
+      if (charIndex > 0) {
+        charIndex--;
+        text = baseText + currentText.substring(0, charIndex);
+        element.textContent = text;
+        typingDelay = 60;  // Supprimer plus rapidement
       } else {
-        typingDelay = 60; // Supprimer plus rapidement
+        isDeleting = false;
+        // Passer au texte suivant
+        currentTextIndex = (currentTextIndex + 1) % developperTexts.length;
+        typingDelay = 500;  // Pause avant de passer au texte suivant
       }
     }
 
